@@ -3,6 +3,8 @@ import { JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
 
+import { BookmarkProvider } from '@/context/bookmark-context'
+
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
@@ -20,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jetbrainsMono.variable} antialiased`}>{children}</body>
+      <body className={`${jetbrainsMono.variable} antialiased`}>
+        <BookmarkProvider>{children}</BookmarkProvider>
+      </body>
     </html>
   )
 }
