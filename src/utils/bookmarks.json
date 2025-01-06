@@ -1,0 +1,97 @@
+[
+  {
+    "id": "1",
+    "title": "Lee Robinson",
+    "url": "https://leerob.com",
+    "tags": [
+      "blog",
+      "personal"
+    ],
+    "createdAt": "2025-01-02"
+  },
+  {
+    "id": "2",
+    "title": "There's no speed limit | Derek Sivers",
+    "url": "https://sive.rs",
+    "tags": [
+      "blog",
+      "article"
+    ],
+    "createdAt": "2025-01-02"
+  },
+  {
+    "id": "3",
+    "title": "Things you're allowed to do",
+    "url": "https://milan.cvitkovic.net",
+    "tags": [
+      "article"
+    ],
+    "createdAt": "2025-01-02"
+  },
+  {
+    "id": "4",
+    "title": "PlasticList",
+    "url": "https://www.plasticlist.org",
+    "tags": [
+      "tool"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "5",
+    "title": "Things we learned about LLMs in 2024",
+    "url": "https://simonwillison.net",
+    "tags": [
+      "article",
+      "ai"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "6",
+    "title": "Cognitive load is what matters",
+    "url": "https://minds.md",
+    "tags": [
+      "article"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "7",
+    "title": "Mono UI Components",
+    "url": "https://www.sacred.computer",
+    "tags": [
+      "design",
+      "ui"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "8",
+    "title": "Handy Arrows",
+    "url": "https://handyarrows.com",
+    "tags": [
+      "tool"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "9",
+    "title": "Fancy Components",
+    "url": "https://www.fancycomponents.dev",
+    "tags": [
+      "design",
+      "ui"
+    ],
+    "createdAt": "2025-01-01"
+  },
+  {
+    "id": "10",
+    "title": "Ambessa Play",
+    "url": "https://ambessaplay.com",
+    "tags": [
+      "tool"
+    ],
+    "createdAt": "2025-01-01"
+  }
+]
