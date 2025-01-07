@@ -2,6 +2,8 @@
 
 import * as React from 'react'
 
+import { useGlobalKeybinding } from '@/hooks/use-global-keybinding'
+
 interface BookmarkContextType {
   manage: boolean
   setManage: React.Dispatch<React.SetStateAction<boolean>>
@@ -14,6 +16,8 @@ interface BookmarkProviderProps {
 }
 
 export function BookmarkProvider({ children }: BookmarkProviderProps) {
+  useGlobalKeybinding()
+
   const [manage, setManage] = React.useState<boolean>(false)
 
   return (
