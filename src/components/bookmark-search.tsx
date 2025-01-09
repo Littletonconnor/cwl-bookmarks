@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { BookA, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 import { BookmarkList } from './bookmark-list'
 
