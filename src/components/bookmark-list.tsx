@@ -1,7 +1,6 @@
 import { Pencil, X } from 'lucide-react'
 
 import { useBookmarkContext } from '@/context/bookmark-context'
-import { cn } from '@/lib/utils'
 
 interface BookmarkListProps {
   bookmarks: any
@@ -12,7 +11,7 @@ export function BookmarkList({ bookmarks }: BookmarkListProps) {
 
   return (
     <>
-      <ul className="space-y-4">
+      <ul id="bookmark-list" className="space-y-4">
         {bookmarks.map((b: any) => {
           return (
             <li
