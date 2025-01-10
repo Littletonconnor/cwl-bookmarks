@@ -23,18 +23,20 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
         const updatedTags = [...tags, newTag]
         setTags(updatedTags)
         setSearchTerm('')
-        const filteredBookmarks = bookmarks.filter((b: any) => {
+        const filteredBookmarks = allBookmarks.filter((b: any) => {
           return b.tags.some((tag: any) => updatedTags.includes(tag))
         })
 
         setBookmarks(filteredBookmarks)
       }
+    } else if (e.key === 'Enter' && e.metaKey) {
+      const bookmarkList = document.getElementById('bookmark-list')
+      bookmarkList?.querySelector('li')?.querySelector('a')?.click()
+    } else if (e.key === 'Backspace' && e.metaKey) {
+      console.log('HITTING BACKSPACE AND SHIFT')
     }
-    // 2) Press 'Backspace' + Shift if search input is empty -> Remove the last tag
-    // TODO: https://chatgpt.com/c/677fd55e-4f9c-800d-83d2-651eddd889a8
   }
 
-  // TODO: clean this filtering logic up.
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
@@ -47,24 +49,29 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
         : allBookmarks
       setBookmarks(filteredBookmarks)
     } else if (!value.startsWith('@')) {
-      const filteredBookmarks = bookmarks.filter((b: any) => {
-        if (tags.length) {
-          return (
-            b.title.toLowerCase().includes(value.toLowerCase()) ||
-            b.url.toLowerCase().includes(value.toLowerCase()) ||
-            (b.tags.some((tag: any) => tag.toLowerCase().includes(value.toLowerCase())) &&
-              b.tags.some((tag: any) => tags.includes(tag)))
-          )
-        } else {
-          return (
-            b.title.toLowerCase().includes(value.toLowerCase()) ||
-            b.url.toLowerCase().includes(value.toLowerCase()) ||
-            b.tags.some((tag: any) => tag.toLowerCase().includes(value.toLowerCase()))
-          )
-        }
-      })
+      if (tags.length) {
+        const filteredBookmarks = allBookmarks.filter((b: any) => {
+          // TODO: This is currently filtering on the entire URL.
+          // This is sort of confusing so it would probably be better to filter on just domain.
+          // e.g., leerob.com insstead of https://leerob.com
+          const hasBookmark =
+            b.title.toLowerCase().startsWith(value.toLowerCase()) ||
+            b.url.toLowerCase().startsWith(value.toLowerCase())
+          const hasTag = b.tags.some((t: any) => tags.includes(t.toLowerCase()))
 
-      setBookmarks(filteredBookmarks)
+          return hasBookmark && hasTag
+        })
+        setBookmarks(filteredBookmarks)
+      } else {
+        const filteredBookmarks = allBookmarks.filter((b: any) => {
+          const hasBookmark =
+            b.title.toLowerCase().startsWith(value.toLowerCase()) ||
+            b.url.toLowerCase().startsWith(value.toLowerCase()) ||
+            b.tags.some((t: any) => t.toLowerCase().includes(value.toLowerCase()))
+          return hasBookmark
+        })
+        setBookmarks(filteredBookmarks)
+      }
     }
   }
 
