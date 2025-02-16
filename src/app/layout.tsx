@@ -3,6 +3,7 @@ import { JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
 
+import { Footer } from '@/components/footer'
 import { BookmarkProvider } from '@/context/bookmark-context'
 
 const jetbrainsMono = JetBrains_Mono({
@@ -29,6 +30,7 @@ export default function RootLayout({
       <link rel="manifest" href="/site.webmanifest" />
       <body className={`${jetbrainsMono.variable} antialiased`}>
         <BookmarkProvider>{children}</BookmarkProvider>
+        <Footer />
       </body>
     </html>
   )
