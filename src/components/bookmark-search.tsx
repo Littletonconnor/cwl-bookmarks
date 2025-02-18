@@ -33,7 +33,7 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
       const bookmarkList = document.getElementById('bookmark-list')
       bookmarkList?.querySelector('li')?.querySelector('a')?.click()
     } else if (e.key === 'Backspace' && e.metaKey) {
-      console.log('HITTING BACKSPACE AND SHIFT')
+      // TODO REMOVE bookmark
     }
   }
 
