@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { Search, X } from 'lucide-react'
 
+import { db } from '@/lib/db'
 import { Badge } from './badge'
 import { BookmarkList } from './bookmark-list'
 
@@ -13,7 +14,18 @@ interface BookmarkSearchProps {
 export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps) {
   const [searchTerm, setSearchTerm] = React.useState('')
   const [tags, setTags] = React.useState<string[]>([])
-  const [bookmarks, setBookmarks] = React.useState(allBookmarks)
+  const [bookmarks, setBookmarks] = React.useState([])
+
+  React.useEffect(() => {
+    async function init() {
+      // TODO: Use zod to parse this instead so we have better typings
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setBookmarks(await db.getAll())
+    }
+
+    init()
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.startsWith('@')) {
@@ -147,4 +159,8 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
       )}
     </div>
   )
+}
+
+async function initializer() {
+  return []
 }
