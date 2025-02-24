@@ -3,29 +3,20 @@
 import * as React from 'react'
 import { Search, X } from 'lucide-react'
 
-import { db } from '@/lib/db'
+import { Bookmark, useBookmarkContext } from '@/context/bookmark-context'
 import { Badge } from './badge'
 import { BookmarkList } from './bookmark-list'
 
-interface BookmarkSearchProps {
-  bookmarks: any
-}
-
-export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps) {
-  const [searchTerm, setSearchTerm] = React.useState('')
-  const [tags, setTags] = React.useState<string[]>([])
-  const [bookmarks, setBookmarks] = React.useState([])
+export function BookmarkSearch() {
+  const { bookmarks: allBookmarks } = useBookmarkContext()
+  const [bookmarks, setBookmarks] = React.useState<Bookmark[]>([])
 
   React.useEffect(() => {
-    async function init() {
-      // TODO: Use zod to parse this instead so we have better typings
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      setBookmarks(await db.getAll())
-    }
+    setBookmarks(allBookmarks)
+  }, [allBookmarks])
 
-    init()
-  }, [])
+  const [searchTerm, setSearchTerm] = React.useState('')
+  const [tags, setTags] = React.useState<string[]>([])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.startsWith('@')) {
@@ -35,8 +26,8 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
         const updatedTags = [...tags, newTag]
         setTags(updatedTags)
         setSearchTerm('')
-        const filteredBookmarks = allBookmarks.filter((b: any) => {
-          return b.tags.some((tag: any) => updatedTags.includes(tag))
+        const filteredBookmarks = allBookmarks.filter((b: Bookmark) => {
+          return b.tags.some((tag: string) => updatedTags.includes(tag))
         })
 
         setBookmarks(filteredBookmarks)
@@ -49,37 +40,39 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
     }
   }
 
+  console.log({ bookmarks, allBookmarks })
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
 
     if (!value) {
       const filteredBookmarks = tags.length
-        ? allBookmarks.filter((b: any) => {
-            return b.tags.some((tag: any) => tags.includes(tag))
+        ? allBookmarks.filter((b: Bookmark) => {
+            return b.tags.some((tag: string) => tags.includes(tag))
           })
         : allBookmarks
       setBookmarks(filteredBookmarks)
     } else if (!value.startsWith('@')) {
       if (tags.length) {
-        const filteredBookmarks = allBookmarks.filter((b: any) => {
+        const filteredBookmarks = allBookmarks.filter((b: Bookmark) => {
           // TODO: This is currently filtering on the entire URL.
           // This is sort of confusing so it would probably be better to filter on just domain.
           // e.g., leerob.com insstead of https://leerob.com
           const hasBookmark =
             b.title.toLowerCase().startsWith(value.toLowerCase()) ||
             b.url.toLowerCase().startsWith(value.toLowerCase())
-          const hasTag = b.tags.some((t: any) => tags.includes(t.toLowerCase()))
+          const hasTag = b.tags.some((t: string) => tags.includes(t.toLowerCase()))
 
           return hasBookmark && hasTag
         })
         setBookmarks(filteredBookmarks)
       } else {
-        const filteredBookmarks = allBookmarks.filter((b: any) => {
+        const filteredBookmarks = allBookmarks.filter((b: Bookmark) => {
           const hasBookmark =
             b.title.toLowerCase().startsWith(value.toLowerCase()) ||
             b.url.toLowerCase().startsWith(value.toLowerCase()) ||
-            b.tags.some((t: any) => t.toLowerCase().includes(value.toLowerCase()))
+            b.tags.some((t: string) => t.toLowerCase().includes(value.toLowerCase()))
           return hasBookmark
         })
         setBookmarks(filteredBookmarks)
@@ -95,25 +88,25 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
 
     if (!searchTerm) {
       const filteredBookmarks = updatedTags.length
-        ? allBookmarks.filter((b: any) => {
-            return b.tags.some((tag: any) => tags.includes(tag))
+        ? allBookmarks.filter((b: Bookmark) => {
+            return b.tags.some((tag: string) => tags.includes(tag))
           })
         : allBookmarks
       setBookmarks(filteredBookmarks)
     } else if (!searchTerm.startsWith('@')) {
-      const filteredBookmarks = bookmarks.filter((b: any) => {
+      const filteredBookmarks = bookmarks.filter((b: Bookmark) => {
         if (updatedTags.length) {
           return (
             b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             b.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (b.tags.some((tag: any) => tag.toLowerCase().includes(searchTerm.toLowerCase())) &&
-              b.tags.some((tag: any) => updatedTags.includes(tag)))
+            (b.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())) &&
+              b.tags.some((tag: string) => updatedTags.includes(tag)))
           )
         } else {
           return (
             b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             b.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            b.tags.some((tag: any) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+            b.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
           )
         }
       })
@@ -159,8 +152,4 @@ export function BookmarkSearch({ bookmarks: allBookmarks }: BookmarkSearchProps)
       )}
     </div>
   )
-}
-
-async function initializer() {
-  return []
 }
