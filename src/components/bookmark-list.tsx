@@ -1,18 +1,28 @@
 import { Pencil, X } from 'lucide-react'
+import Image from 'next/image'
 
-import { useBookmarkContext } from '@/context/bookmark-context'
+import { Bookmark, useBookmarkContext } from '@/context/bookmark-context'
 
 interface BookmarkListProps {
-  bookmarks: any
+  bookmarks: Bookmark[]
 }
 
 export function BookmarkList({ bookmarks }: BookmarkListProps) {
-  const { manage } = useBookmarkContext()
+  const { manage, deleteBookmark } = useBookmarkContext()
+
+  async function handleDelete(id: string) {
+    try {
+      deleteBookmark(id)
+    } catch (e) {
+      console.error(e)
+      // add error toast
+    }
+  }
 
   return (
     <>
       <ul id="bookmark-list" className="space-y-4">
-        {bookmarks.map((b: any) => {
+        {bookmarks.map((b: Bookmark) => {
           return (
             <li
               className="cursor-pointer rounded-md flex items-center py-2 hover:bg-gray-50"
@@ -45,7 +55,10 @@ export function BookmarkList({ bookmarks }: BookmarkListProps) {
                   <button className="rounded-sm border border-gray-500 p-0.5 text-gray-500">
                     <Pencil className="w-3 h-3" />
                   </button>
-                  <button className="rounded-sm border border-gray-500 p-0.5 text-gray-500">
+                  <button
+                    onClick={() => handleDelete(b.id)}
+                    className="rounded-sm border border-gray-500 p-0.5 text-gray-500"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </div>

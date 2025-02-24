@@ -35,44 +35,64 @@ export const db = {
       }
     })
   },
-  seed() {
-    db.open().then((db: IDBDatabase) => {
-      return new Promise(() => {
-        const transaction = db.transaction('bookmarks', 'readwrite')
-        const store = transaction.objectStore('bookmarks')
+  async seed() {
+    const db = await this.open()
+
+    return new Promise(() => {
+      const transaction = db.transaction('bookmarks', 'readwrite')
+      const store = transaction.objectStore('bookmarks')
+      const request = store.getAll()
+
+      transaction.oncomplete = () => {
+        if (request.result.length > 0) {
+          console.log('[Index DB]: bookmarks is already seeded. Skipping.')
+          return
+        }
 
         for (const bookmark of bookmarks) {
           store.put(bookmark)
         }
+        console.log('[Index DB]: Successfully seeded the `bookmarks` object store.')
+      }
 
-        transaction.oncomplete = () => {
-          console.log('[Index DB]: Successfully seeded the `bookmarks` object store.')
-        }
-
-        transaction.onerror = () => {
-          console.log('[Index DB]: Failed while seeding the `bookmarks` object store.')
-        }
-      })
+      transaction.onerror = () => {
+        console.log('[Index DB]: Failed while seeding the `bookmarks` object store.')
+      }
     })
   },
-  getAll() {
-    return db.open().then((db: IDBDatabase) => {
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction('bookmarks', 'readwrite')
-        const store = transaction.objectStore('bookmarks')
-        const request = store.getAll()
+  async getAll() {
+    const db = await this.open()
 
-        transaction.oncomplete = () => {
-          console.log('[Index DB]: Called getAll')
-          resolve(request.result)
-        }
+    return await new Promise((resolve, reject) => {
+      const transaction = db.transaction('bookmarks', 'readwrite')
+      const store = transaction.objectStore('bookmarks')
+      const request = store.getAll()
 
-        transaction.onerror = () => {
-          console.log('[Index DB]: Failed calling getAll')
-          reject(request.error)
-        }
-      })
+      transaction.oncomplete = () => {
+        console.log('[Index DB]: fetched all bookmarks')
+        resolve(request.result)
+      }
+
+      transaction.onerror = () => {
+        console.log('[Index DB]: failed fetching all bookmarks')
+        reject(request.error)
+      }
     })
+  },
+
+  async remove(id: string) {
+    const db = await this.open()
+    const transaction = db.transaction('bookmarks', 'readwrite')
+    const store = transaction.objectStore('bookmarks')
+    const request = store.delete(id)
+
+    request.onsuccess = () => {
+      console.log(`[Index DB]: deleted bookmarks ${id} bookmarks`)
+    }
+
+    transaction.onerror = (event) => {
+      console.log(`[Index DB]: failed deleting bookmarks ${event}`)
+    }
   },
 }
 
